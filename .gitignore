@@ -4,4 +4,3 @@ log/*
 build/
 log/
 install/
-src/ros_serial2wifi
