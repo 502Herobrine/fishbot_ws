@@ -1,0 +1,21 @@
+image_width: 320
+image_height: 240
+camera_name: fishbot_camera
+camera_matrix:
+  rows: 3
+  cols: 3
+  # 经验公式：fx = fy = width * 0.8
+  data: [250.0, 0.0, 160.0, 0.0, 250.0, 120.0, 0.0, 0.0, 1.0]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [0.0, 0.0, 0.0, 0.0, 0.0]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [250.0, 0.0, 160.0, 0.0, 0.0, 250.0, 120.0, 0.0, 0.0, 0.0, 1.0, 0.0]
