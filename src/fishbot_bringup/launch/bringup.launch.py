@@ -44,7 +44,7 @@ def generate_launch_description():
     return launch.LaunchDescription([
         urdf2tf,
         odom2tf,
-        microros_agent,
+        # microros_agent,
         ros_serial2wifi,
         ydlidar_delay
     ])
