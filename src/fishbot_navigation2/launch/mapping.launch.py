@@ -63,7 +63,7 @@ def generate_launch_description():
 
     #===============================================定义启动文件========================================================
     ld = LaunchDescription()
-    ld.add_action(robot_state_publisher)
+    # ld.add_action(robot_state_publisher)
     ld.add_action(cartographer_node)
     ld.add_action(cartographer_occupancy_grid_node)
     ld.add_action(rviz_node)
