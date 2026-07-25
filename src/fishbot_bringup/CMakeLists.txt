@@ -35,8 +35,10 @@ ament_target_dependencies(odom2tf
 )
 install(TARGETS odom2tf
   DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY 
+install(DIRECTORY
   launch
+  worlds
   DESTINATION share/${PROJECT_NAME}
+  PATTERN "__pycache__" EXCLUDE
 )
 ament_package()

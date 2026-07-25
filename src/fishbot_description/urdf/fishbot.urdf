@@ -4,15 +4,28 @@
   
   <!-- base link -->
   <link name="base_link">
-  <visual>
-    <origin xyz="0 0 0.0" rpy="0 0 0" />
-    <geometry>
-      <cylinder length="0.12" radius="0.10" />
-    </geometry>
-    <material name="blue">
-      <color rgba="0.1 0.1 1.0 0.5" />
-    </material>
-  </visual>
+    <visual>
+      <origin xyz="0 0 0.0" rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.12" radius="0.10" />
+      </geometry>
+      <material name="blue">
+        <color rgba="0.1 0.1 1.0 0.5" />
+      </material>
+    </visual>
+    <!-- Gazebo需要碰撞体和惯性参数，否则可能将没有惯性的动态link忽略 -->
+    <collision>
+      <origin xyz="0 0 0.0" rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.12" radius="0.10" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.0" rpy="0 0 0" />
+      <mass value="2.0" />
+      <inertia ixx="0.0074" ixy="0.0" ixz="0.0"
+               iyy="0.0074" iyz="0.0" izz="0.0100" />
+    </inertial>
   </link>
   <joint name="base_joint" type="fixed">
     <parent link="base_footprint" />
@@ -22,20 +35,142 @@
 
   <!-- laser link -->
   <link name="laser_link">
-  <visual>
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <geometry>
-      <cylinder length="0.02" radius="0.02" />
-    </geometry>
-    <material name="black">
-      <color rgba="0.0 0.0 0.0 0.5" />
-    </material>
-  </visual>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.02" radius="0.02" />
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 0.5" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder length="0.02" radius="0.02" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.05" />
+      <inertia ixx="0.00000667" ixy="0.0" ixz="0.0"
+               iyy="0.00000667" iyz="0.0" izz="0.00001000" />
+    </inertial>
   </link>
   <joint name="laser_joint" type="fixed">
     <parent link="base_link" />
     <child link="laser_link" />
     <origin xyz="0 0 0.075" rpy="0 0 0" />
   </joint>
+
+  <!-- left wheel link -->
+  <link name="left_wheel_link">
+    <visual>
+      <!-- URDF中的圆柱体默认沿Z轴放置，绕X轴旋转90度后使轮轴沿Y轴放置 -->
+      <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+      <geometry>
+        <cylinder length="0.04" radius="0.032" />
+      </geometry>
+      <material name="wheel_black">
+        <color rgba="0.05 0.05 0.05 1.0" />
+      </material>
+    </visual>
+    <visual name="left_wheel_rotation_marker">
+      <!-- 黑色圆柱绕自身轴旋转时外观没有变化，在轮子外侧增加色标便于观察真实转角 -->
+      <origin xyz="0 0.022 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.050 0.004 0.006" />
+      </geometry>
+      <material name="wheel_marker">
+        <color rgba="1.0 0.4 0.0 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+      <geometry>
+        <cylinder length="0.04" radius="0.032" />
+      </geometry>
+    </collision>
+    <inertial>
+      <!-- 惯性矩按照质量0.05kg、半径0.032m、宽度0.04m的实心圆柱体计算 -->
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.05" />
+      <inertia ixx="0.00001947" ixy="0.0" ixz="0.0"
+               iyy="0.00002560" iyz="0.0" izz="0.00001947" />
+    </inertial>
+  </link>
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="left_wheel_link" />
+    <!-- 轮子半径为0.032m，因此轮心相对base_footprint的高度设置为0.032m -->
+    <origin xyz="-0.02 0.10 -0.044" rpy="0 0 0" />
+    <!-- 负Y轴保证编码器正方向对应小车X轴正方向前进时的轮子旋转方向 -->
+    <axis xyz="0 -1 0" />
+    <limit effort="2.0" velocity="100.0" />
+    <dynamics damping="0.0" friction="0.0" />
+  </joint>
+
+  <!-- right wheel link -->
+  <link name="right_wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+      <geometry>
+        <cylinder length="0.04" radius="0.032" />
+      </geometry>
+      <material name="wheel_black" />
+    </visual>
+    <visual name="right_wheel_rotation_marker">
+      <origin xyz="0 -0.022 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.050 0.004 0.006" />
+      </geometry>
+      <material name="wheel_marker" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5707963 0 0" />
+      <geometry>
+        <cylinder length="0.04" radius="0.032" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="0.05" />
+      <inertia ixx="0.00001947" ixy="0.0" ixz="0.0"
+               iyy="0.00002560" iyz="0.0" izz="0.00001947" />
+    </inertial>
+  </link>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="right_wheel_link" />
+    <origin xyz="-0.02 -0.10 -0.044" rpy="0 0 0" />
+    <axis xyz="0 -1 0" />
+    <limit effort="2.0" velocity="100.0" />
+    <dynamics damping="0.0" friction="0.0" />
+  </joint>
+
+  <!--
+    该Gazebo模型插件订阅真实ESP32发布的/joint_states，并将消息中的position直接写入同名Gazebo关节。
+    robot_state_publisher也订阅同一话题，因此Gazebo模型和ROS TF使用完全相同的编码器轮角。
+  -->
+  <gazebo>
+    <plugin name="set_joint_positions_plugin"
+            filename="libgazebo_set_joint_positions_plugin.so">
+      <robot_namespace>/</robot_namespace>
+      <topic_name>joint_states</topic_name>
+    </plugin>
+    <!--
+      将Gazebo内部实际采用的轮子角度发布到/gazebo_joint_states，仅用于检查同步结果。
+      使用独立话题可避免该反馈消息与ESP32拥有的/joint_states形成回路。
+    -->
+    <plugin name="gazebo_wheel_state_feedback"
+            filename="libgazebo_ros_joint_state_publisher.so">
+      <ros>
+        <remapping>joint_states:=/gazebo_joint_states</remapping>
+      </ros>
+      <update_rate>20.0</update_rate>
+      <joint_name>left_wheel_joint</joint_name>
+      <joint_name>right_wheel_joint</joint_name>
+    </plugin>
+  </gazebo>
 
 </robot>

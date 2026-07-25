@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="wheel_mirror">
+    <!--
+      本世界只用于显示真实小车轮子的编码器转动，不负责模拟小车动力学。
+      将重力设为0可以防止没有底盘控制器的模型掉落或因接触力发生位移。
+    -->
+    <gravity>0 0 0</gravity>
+
+    <!-- 使用固定物理步长，保证Gazebo模型插件能稳定处理20Hz的joint_states消息 -->
+    <physics name="wheel_mirror_physics" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000.0</real_time_update_rate>
+    </physics>
+
+    <!-- 添加地面和光源，使模型启动后无需额外资源即可直接观察 -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+  </world>
+</sdf>
