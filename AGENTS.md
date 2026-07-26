@@ -25,6 +25,10 @@
 - 当前目标平台是 ROS 2 Humble、Gazebo Classic 和 PlatformIO/micro-ROS ESP32 小车。
   如果实际环境变更，先确认发行版、Gazebo 版本、RMW 实现和固件传输方式，再使用对应
   API；不要把别的 ROS 发行版的旧 launch 写法直接移植过来。
+- 配套单片机工程根目录为
+  `/home/nbclass/Documents/PlatformIO/Projects/motor_control`。需要确认编码器、运动学、
+  PID、固件话题或硬件引脚时，必须到该目录阅读实际源码和 `lib`，不要在上位机工作区
+  猜测固件实现。
 - 上位机工作空间包含 `fishbot_bringup`、`fishbot_description`、
   `fishbot_navigation2`、`ydlidar_ros2`、`ros_serial2wifi`、`micro_ros_msgs`
   等包。修改一个包时只触及必要依赖，不要顺手重构无关包。
@@ -126,4 +130,3 @@
   默认轮角的测试节点。
 - 任何会让电机保持上次速度、改变 PID、改变编码器符号或改变网络地址的修改都属于
   高风险变更，必须先解释影响并得到明确授权。
-
