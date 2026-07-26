@@ -104,8 +104,12 @@
     <child link="left_wheel_link" />
     <!-- 轮子半径为0.032m，因此轮心相对base_footprint的高度设置为0.032m -->
     <origin xyz="-0.02 0.10 -0.044" rpy="0 0 0" />
-    <!-- 负Y轴保证编码器正方向对应小车X轴正方向前进时的轮子旋转方向 -->
-    <axis xyz="0 -1 0" />
+    <!--
+      FishBot采用REP-103坐标约定：base_link的X轴朝前、Y轴朝左、Z轴朝上。
+      官方FishBot模型的左右轮关节均以Y轴正方向作为旋转轴。此前这里使用负Y轴，
+      会把ESP32发布的编码器轮角取反，表现为Gazebo轮子与真实轮子转向相反。
+    -->
+    <axis xyz="0 1 0" />
     <limit effort="2.0" velocity="100.0" />
     <dynamics damping="0.0" friction="0.0" />
   </joint>
@@ -143,7 +147,8 @@
     <parent link="base_link" />
     <child link="right_wheel_link" />
     <origin xyz="-0.02 -0.10 -0.044" rpy="0 0 0" />
-    <axis xyz="0 -1 0" />
+    <!-- 与官方FishBot模型保持一致，右轮同样使用Y轴正方向解释编码器轮角 -->
+    <axis xyz="0 1 0" />
     <limit effort="2.0" velocity="100.0" />
     <dynamics damping="0.0" friction="0.0" />
   </joint>

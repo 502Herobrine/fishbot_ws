@@ -17,8 +17,9 @@ def generate_launch_description():
         'wheel_mirror.world',
     ])
 
-    # 启动真实小车的完整bringup，其中包含micro-ROS Agent和robot_state_publisher
-    # 如果用户已经在另一个终端启动了bringup，可以设置start_robot_bringup:=false避免重复节点
+    # 启动真实小车的完整bringup，其中包含micro-ROS Agent和robot_state_publisher。
+    # micro-ROS Agent的启动开关和端口继续传给被包含的launch，保证顶层launch可以
+    # 明确选择“由本次启动统一管理Agent”或“复用外部Agent”，不会隐式启动第二个实例。
     real_robot_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([
@@ -28,6 +29,12 @@ def generate_launch_description():
             ])
         ),
         condition=IfCondition(LaunchConfiguration('start_robot_bringup')),
+        launch_arguments={
+            'start_micro_ros_agent': LaunchConfiguration(
+                'start_micro_ros_agent'),
+            'micro_ros_agent_port': LaunchConfiguration(
+                'micro_ros_agent_port'),
+        }.items(),
     )
 
     # 启动Gazebo Classic，并允许通过gui参数选择是否打开图形界面
@@ -66,6 +73,14 @@ def generate_launch_description():
             'start_robot_bringup',
             default_value='true',
             description='是否同时启动真实小车bringup'),
+        DeclareLaunchArgument(
+            'start_micro_ros_agent',
+            default_value='true',
+            description='是否由本次bringup启动并管理micro-ROS Agent'),
+        DeclareLaunchArgument(
+            'micro_ros_agent_port',
+            default_value='8888',
+            description='micro-ROS Agent监听的UDP端口'),
         DeclareLaunchArgument(
             'gui',
             default_value='true',
